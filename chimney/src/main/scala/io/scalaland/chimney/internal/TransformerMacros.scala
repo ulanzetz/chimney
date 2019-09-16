@@ -66,6 +66,8 @@ trait TransformerMacros {
           expandTargetWrappedInOption(srcPrefixTree, config)(From, To)
         } else if (bothOptions(From, To)) {
           expandOptions(srcPrefixTree, config)(From, To)
+        } else if (fromOptListToList(From, To)) {
+          expandOptListToList(srcPrefixTree, config)(From, To)
         } else if (bothEithers(From, To)) {
           expandEithers(srcPrefixTree, config)(From, To)
         } else if (bothMaps(From, To)) {
@@ -86,6 +88,11 @@ trait TransformerMacros {
           }
         }
       }
+  }
+
+  def expandOptListToList(srcPrefixTree: Tree, config: Config)(From: Type,
+                                                               To: Type): Either[Seq[DerivationError], Tree] = {
+    expandTransformerTree(q"$srcPrefixTree.toList.flatten", config.rec)(From.typeArgs.head, To)
   }
 
   def expandValueClassToType(srcPrefixTree: Tree)(From: Type, To: Type): Either[Seq[DerivationError], Tree] = {

@@ -487,6 +487,19 @@ object DslSpec extends TestSuite {
         Map(Foo("test") -> "x").transformInto[Map[Bar, String]] ==> Map(Bar("test") -> "x")
         Map(Foo("test") -> Foo("x")).transformInto[Map[Bar, Bar]] ==> Map(Bar("test") -> Bar("x"))
       }
+
+      "support option collection flatting" - {
+        case class From(a: Option[List[A]])
+
+        case class To(a: List[B])
+
+        case class A(value: String)
+
+        case class B(value: String)
+
+        From(Some(List(A("a"), A("b")))).transformInto[To] ==> To(List(B("a"), B("b")))
+        From(Option.empty).transformInto[To] ==> To(Nil)
+      }
     }
 
     "support sealed hierarchies" - {

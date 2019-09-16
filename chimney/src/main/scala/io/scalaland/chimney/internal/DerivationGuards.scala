@@ -99,11 +99,16 @@ trait DerivationGuards {
     isTuple(to) ||
     destinationCaseClass(to) ||
     destinationJavaBean(to) ||
-    bothSealedClasses(from, to)
+    bothSealedClasses(from, to) ||
+    fromOptListToList(from, to)
   }
 
   def iterableOrArray(t: Type): Boolean = {
     t <:< iterableTpe || t <:< arrayTpe
+  }
+
+  def fromOptListToList(from: Type, to: Type): Boolean = {
+    from <:< typeOf[Option[List[_]]] && to <:< typeOf[List[_]]
   }
 
   val optionTpe: Type = typeOf[Option[_]]
